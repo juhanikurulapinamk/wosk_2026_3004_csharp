@@ -112,5 +112,80 @@ public class AppUser
 
     }
 
+    private async Task<bool> Add()
+    {
+        using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
+        connection.Open();
+
+        var insertCommand = connection.CreateCommand();
+        insertCommand.CommandText = @"
+            INSERT INTO users(first_name, last_name, username)
+            VALUES(@firstName, @lastName, @username);
+            SELECT last_insert_rowid();";
+        insertCommand.Parameters.AddWithValue("@firstName", Firstname);
+        insertCommand.Parameters.AddWithValue("@lastName", Lastname);
+        insertCommand.Parameters.AddWithValue("@username", Username);
+
+        var newId = await insertCommand.ExecuteScalarAsync();
+        if (newId == null)
+        {
+            return false;
+        }
+
+        Id = (long)newId;
+
+        return true;
+
+
+
+    }
+
+    private async Task<bool> Update()
+    {
+        using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
+        connection.Open();
+
+        // luodaan sql-komento päivitystä varten ja asetetaan sille yo. parametrit
+        var updateCommand = connection.CreateCommand();
+        updateCommand.CommandText = @"
+            UPDATE users SET
+                first_name = @newFirstName,
+                last_name = @newLastName,
+                username = @newUsername
+            WHERE id = @id;";
+
+        // Koska pääsemme modelin metodin sisällä luokan instanssin propertyihin käsiksi,
+        // metodille ei tarvitse lähettää erillisiä parametrejä
+        updateCommand.Parameters.AddWithValue("@newFirstName", Firstname);
+        updateCommand.Parameters.AddWithValue("@newLastName", Lastname);
+        updateCommand.Parameters.AddWithValue("@newUsername", Username);
+        updateCommand.Parameters.AddWithValue("@id", Id);
+
+        int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
+
+        return rowsAffected == 1;
+
+
+
+
+    }
+
+    public async Task<bool> Save()
+    {
+        bool success;
+        if (Id == null)
+        {
+            success = await Add();
+        }
+        else
+        {
+            success = await Update();
+        }
+
+        return success;
+
+
+    }
+
 
 }
