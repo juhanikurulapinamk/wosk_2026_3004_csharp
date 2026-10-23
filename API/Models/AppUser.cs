@@ -187,5 +187,28 @@ public class AppUser
 
     }
 
+    public async Task<bool> Remove()
+    {
+        using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
+        
+        connection.Open();
+
+        // luodaan sql-komento poistoa varten
+        var command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM users WHERE id = @id;";
+        command.Parameters.AddWithValue("@id", Id);
+
+
+        // tässä voidaan käyttää ExecuteNonQueryAsyncia,
+        // koska DELETE-kysely ei palauta varsinaista tulosta tietokannasta
+        int rowsAffected = await command.ExecuteNonQueryAsync();
+
+
+        return rowsAffected == 1;
+        
+        
+        
+    }
+
 
 }
