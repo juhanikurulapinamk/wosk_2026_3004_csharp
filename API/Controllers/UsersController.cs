@@ -5,6 +5,7 @@
 using Api.Dtos;
 using API.Dtos;
 using API.Models;
+using API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using SQLitePCL;
 
@@ -23,7 +24,8 @@ public class UsersController : ControllerBase
     {
         try
         {
-            var users = await AppUser.GetAll();
+            using var repo = new UsersSQLiteRepository();
+            var users = await repo.GetAll();
             return Ok(users);
         } catch(Exception e)
         {
@@ -37,8 +39,9 @@ public class UsersController : ControllerBase
     {
         try
         {
+            using var repo = new UsersSQLiteRepository();
 
-            var user = await AppUser.GetById(id);
+            var user = await repo.GetById(id);
             if (user == null)
             {
                 return NotFound("User not found");
@@ -50,7 +53,7 @@ public class UsersController : ControllerBase
             // jos request body ei sisällä username-avainta ja sen arvoa, käytetään käyttäjän oo. tietokannasta löytyvää käyttäjänimeä
             user.Username = string.IsNullOrWhiteSpace(request.Username) ? user.Username : request.Username;
 
-            bool success = await user.Save();
+            bool success = await repo.Save(user);
             if (success)
             {
                 return Ok(user);
@@ -83,8 +86,8 @@ public class UsersController : ControllerBase
                 Firstname = request.FirstName,
                 Lastname = request.LastName
             };
-
-            bool success = await user.Save();
+            using var repo = new UsersSQLiteRepository();
+            bool success = await repo.Save(user);
             if (success)
             {
                 // CreatedAtRoute palauttaa statuskoodin 201 ja Location-headerin,
@@ -105,7 +108,8 @@ public class UsersController : ControllerBase
     {
         try
         {
-            var user = await AppUser.GetById(id);
+            using var repo = new UsersSQLiteRepository();
+            var user = await repo.GetById(id);
             if(user == null)
             {
                 return NotFound("user not found");
@@ -123,12 +127,13 @@ public class UsersController : ControllerBase
     {
         try
         {
-            var user = await AppUser.GetById(id);
+            using var repo = new UsersSQLiteRepository();
+            var user = await repo.GetById(id);
             if(user == null)
             {
                 return NotFound();
             }
-            var removed = await user.Remove();
+            var removed = await repo.Remove(user);
             if(removed)
             {
                 return NoContent();
