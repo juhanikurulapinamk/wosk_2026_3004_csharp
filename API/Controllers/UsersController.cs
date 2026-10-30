@@ -4,6 +4,7 @@
 
 using Api.Dtos;
 using API.Dtos;
+using API.Factories;
 using API.Models;
 using API.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ public class UsersController : ControllerBase
     {
         try
         {
-            using var repo = new UsersSQLiteRepository();
+            using var repo = UsersRepositoryFactory.Create();
             var users = await repo.GetAll();
             return Ok(users);
         } catch(Exception e)
