@@ -1,9 +1,10 @@
+using API.Interfaces;
 using API.Models;
 using Microsoft.Data.Sqlite;
 
 namespace API.Repositories;
 
-public class UsersSQLiteRepository : IDisposable {
+public class UsersSQLiteRepository : IUsersRepository {
     
     private readonly SqliteConnection _connection;
 
