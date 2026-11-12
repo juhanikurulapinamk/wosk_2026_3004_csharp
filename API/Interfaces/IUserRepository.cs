@@ -7,7 +7,7 @@ namespace API.Interfaces
 {
 
     // huomaa, että IUsersRepository-interfacemme perii IDisposable-interfacen
-    public interface IUsersRepository : IDisposable
+    public interface IUsersRepository
     {
         public Task<IEnumerable<AppUser>> GetAll();
         public Task<AppUser?> GetById(long id);

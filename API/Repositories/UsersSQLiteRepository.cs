@@ -4,24 +4,13 @@ using Microsoft.Data.Sqlite;
 
 namespace API.Repositories;
 
-public class UsersSQLiteRepository : IUsersRepository {
+public class UsersSQLiteRepository(SqliteConnection connection) : IUsersRepository {
     
-    private readonly SqliteConnection _connection;
+    
 
-    public UsersSQLiteRepository()
-    {
-        _connection = new SqliteConnection("Data Source=tuntiharjoitus1.db");
-        _connection.Open();
-    }
+    
 
-    public void Dispose()
-    {
-        if (_connection != null)
-            {
-                _connection.Close();
-                _connection.Dispose();
-            }
-    }
+    
 
     public async Task<IEnumerable<AppUser>> GetAll()
     {
@@ -30,9 +19,9 @@ public class UsersSQLiteRepository : IUsersRepository {
         // luodaan tyhjä lista tietokannan rivejä varten
         var users = new List<AppUser>();
         // luodaan yhteys ja avataan se
-        using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
+        //using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
 
-        connection.Open();
+        //connection.Open();
 
 
         // luodaan sql-komento ja suoritetaan se
@@ -73,9 +62,9 @@ public class UsersSQLiteRepository : IUsersRepository {
         
         AppUser? user;
         // luodaan yhteys ja avataan se
-        using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
+        //using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
 
-        connection.Open();
+        //connection.Open();
 
 
         // luodaan sql-komento ja suoritetaan se
@@ -117,8 +106,8 @@ public class UsersSQLiteRepository : IUsersRepository {
 
     private async Task<bool> Add(AppUser user)
     {
-        using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
-        connection.Open();
+        //using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
+        //connection.Open();
 
         var insertCommand = connection.CreateCommand();
         insertCommand.CommandText = @"
@@ -145,8 +134,8 @@ public class UsersSQLiteRepository : IUsersRepository {
 
     private async Task<bool> Update(AppUser user)
     {
-        using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
-        connection.Open();
+        //using var connection = new SqliteConnection("Data source=tuntiharjoitus1.db");
+        //connection.Open();
 
         // luodaan sql-komento päivitystä varten ja asetetaan sille yo. parametrit
         var updateCommand = connection.CreateCommand();

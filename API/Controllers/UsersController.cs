@@ -5,6 +5,7 @@
 using Api.Dtos;
 using API.Dtos;
 using API.Factories;
+using API.Interfaces;
 using API.Models;
 using API.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 
 // api/Users
-public class UsersController : ControllerBase
+public class UsersController(IUsersRepository repo) : ControllerBase
 {
     // api/User
     [HttpGet]
@@ -25,7 +26,7 @@ public class UsersController : ControllerBase
     {
         try
         {
-            using var repo = UsersRepositoryFactory.Create();
+            //using var repo = UsersRepositoryFactory.Create();
             var users = await repo.GetAll();
             return Ok(users);
         } catch(Exception e)
@@ -40,7 +41,7 @@ public class UsersController : ControllerBase
     {
         try
         {
-            using var repo = new UsersSQLiteRepository();
+            //using var repo = new UsersSQLiteRepository();
 
             var user = await repo.GetById(id);
             if (user == null)
@@ -87,7 +88,7 @@ public class UsersController : ControllerBase
                 Firstname = request.FirstName,
                 Lastname = request.LastName
             };
-            using var repo = new UsersSQLiteRepository();
+            //using var repo = new UsersSQLiteRepository();
             bool success = await repo.Save(user);
             if (success)
             {
@@ -109,7 +110,7 @@ public class UsersController : ControllerBase
     {
         try
         {
-            using var repo = new UsersSQLiteRepository();
+            //using var repo = new UsersSQLiteRepository();
             var user = await repo.GetById(id);
             if(user == null)
             {
@@ -128,7 +129,7 @@ public class UsersController : ControllerBase
     {
         try
         {
-            using var repo = new UsersSQLiteRepository();
+            //using var repo = new UsersSQLiteRepository();
             var user = await repo.GetById(id);
             if(user == null)
             {
